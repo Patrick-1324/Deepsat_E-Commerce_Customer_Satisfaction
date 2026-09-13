@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce CSAT Prediction</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #fff;
+            --text: #172033;
+            --muted: #67748a;
+            --border: #dfe5ef;
+            --primary: #315efb;
+            --success-bg: #edf9f1;
+            --success-border: #bfe6ca;
+            --error-bg: #fff1f1;
+            --error-border: #efb6b6;
+            --tag-bg: #eef3ff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+                         BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .page {
+            width: min(1180px, calc(100% - 32px));
+            margin: 28px auto 60px;
+        }
+
+        .header { margin-bottom: 20px; }
+        .header h1 { margin: 0 0 7px; font-size: 30px; }
+        .header p { margin: 0; color: var(--muted); line-height: 1.55; }
+
+        .notice {
+            background: #f7f9fe;
+            border-left: 4px solid var(--primary);
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            color: #47546a;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 5px 22px rgba(26,39,71,.05);
+            margin-bottom: 18px;
+        }
+
+        .result {
+            background: var(--success-bg);
+            border-color: var(--success-border);
+        }
+
+        .error {
+            background: var(--error-bg);
+            border-color: var(--error-border);
+        }
+
+        .section-title { margin: 0 0 4px; font-size: 19px; }
+        .section-help {
+            margin: 0 0 17px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .field.full { grid-column: 1 / -1; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .optional { color: var(--muted); font-weight: 400; }
+
+        input, select, textarea {
+            width: 100%;
+            min-height: 43px;
+            padding: 10px 11px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            font: inherit;
+            color: var(--text);
+        }
+
+        textarea { min-height: 105px; resize: vertical; }
+
+        select:disabled {
+            background: #f0f3f8;
+            color: #8b95a7;
+        }
+
+        .hint {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .constraint-tag {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: var(--tag-bg);
+            color: #3152a8;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .score-row {
+            display: flex;
+            align-items: end;
+            gap: 15px;
+            margin: 10px 0 18px;
+        }
+
+        .score {
+            font-size: 62px;
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .score-label {
+            color: var(--muted);
+            padding-bottom: 5px;
+            line-height: 1.45;
+        }
+
+        .probability-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 9px;
+        }
+
+        .probability {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255,255,255,.75);
+            border: 1px solid var(--success-border);
+            border-radius: 9px;
+        }
+
+        .probability strong {
+            display: block;
+            margin-top: 3px;
+            font-size: 17px;
+        }
+
+        .context-grid,
+        .derived-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .metric-box {
+            background: rgba(255,255,255,.68);
+            border: 1px solid var(--success-border);
+            border-radius: 9px;
+            padding: 10px 12px;
+        }
+
+        .metric-box span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .metric-box strong { font-size: 14px; }
+
+        .probability-note {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #56637a;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 17px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary { background: var(--primary); color: white; }
+        .secondary { background: #eef2f9; color: var(--text); }
+
+        @media (max-width: 760px) {
+            .grid,
+            .context-grid,
+            .derived-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full { grid-column: auto; }
+
+            .probability-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+
+    <div class="header">
+        <h1>E-Commerce CSAT Prediction</h1>
+        <p>
+            Flask inference demo using the final ANN and saved preprocessing
+            pipeline.
+        </p>
+    </div>
+
+    <div class="notice">
+        <strong>Training-valid combinations are enforced.</strong>
+        Category controls Sub-category, and Manager controls Supervisor →
+        Agent → Tenure / Shift. Mappings were built from
+        <strong>{{ constraint_source }}</strong>.
+    </div>
+
+    {% if error %}
+    <div class="card error">
+        <strong>Prediction failed</strong>
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+
+    {% if result %}
+    <div class="card result">
+        <h2 class="section-title">Prediction result</h2>
+
+        <div class="score-row">
+            <div class="score">{{ result.predicted_score }}</div>
+            <div class="score-label">
+                Predicted CSAT score<br>
+                ANN output probability:
+                <strong>{{ "%.1f"|format(result.model_probability * 100) }}%</strong>
+            </div>
+        </div>
+
+        <div class="probability-grid">
+            {% for item in result.probabilities %}
+            <div class="probability">
+                CSAT {{ item.score }}
+                <strong>{{ "%.1f"|format(item.probability * 100) }}%</strong>
+            </div>
+            {% endfor %}
+        </div>
+
+        <p class="probability-note">
+            ANN output probability is the model's class preference for this
+            input. It is <strong>not</strong> the same as overall prediction
+            accuracy.
+        </p>
+
+        <div class="context-grid">
+            <div class="metric-box">
+                <span>Final test accuracy</span>
+                <strong>{{ "%.1f"|format(metrics.test_accuracy * 100) }}%</strong>
+            </div>
+            <div class="metric-box">
+                <span>Majority baseline</span>
+                <strong>{{ "%.1f"|format(metrics.majority_baseline_accuracy * 100) }}%</strong>
+            </div>
+            <div class="metric-box">
+                <span>Within ±1 CSAT</span>
+                <strong>{{ "%.1f"|format(metrics.within_plus_minus_1 * 100) }}%</strong>
+            </div>
+        </div>
+
+        <h3 style="margin:18px 0 5px;">Derived model inputs</h3>
+        <p class="section-help">
+            These are calculated automatically from the timeline/text fields
+            before the ANN prediction.
+        </p>
+
+        <div class="derived-grid">
+            <div class="metric-box">
+                <span>Response time</span>
+                <strong>{{ result.derived.response_time_minutes }} min</strong>
+            </div>
+            <div class="metric-box">
+                <span>Order → issue</span>
+                <strong>{{ result.derived.order_to_issue_hours }} hr</strong>
+            </div>
+            <div class="metric-box">
+                <span>Survey delay</span>
+                <strong>{{ result.derived.survey_delay_hours }} hr</strong>
+            </div>
+            <div class="metric-box">
+                <span>Issue day</span>
+                <strong>{{ result.derived.issue_day_name }}</strong>
+            </div>
+            <div class="metric-box">
+                <span>Issue time bucket</span>
+                <strong>{{ result.derived.issue_hour_bucket }}</strong>
+            </div>
+            <div class="metric-box">
+                <span>Remark word count</span>
+                <strong>{{ result.derived.remarks_word_count }}</strong>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <form method="post" id="prediction-form">
+
+        <div class="card">
+            <h2 class="section-title">1. Interaction details</h2>
+            <p class="section-help">
+                Sub-category is limited to values observed under the selected
+                Category in the source dataset.
+            </p>
+
+            <div class="grid">
+                <div class="field">
+                    <label>Channel</label>
+                    <select id="channel_name" name="channel_name" required>
+                        <option value="">Select...</option>
+                        {% for value in training_options.get("channel_name", []) %}
+                        <option value="{{ value }}"
+                            {% if submitted.get("channel_name") == value %}selected{% endif %}>
+                            {{ value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select...</option>
+                        {% for value in training_options.get("category", []) %}
+                        <option value="{{ value }}"
+                            {% if submitted.get("category") == value %}selected{% endif %}>
+                            {{ value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Sub-category</label>
+                    <select id="sub_category" name="sub_category" required>
+                        <option value="">Select Category first...</option>
+                    </select>
+                    <span class="constraint-tag">Filtered by Category</span>
+                </div>
+
+                <div class="field">
+                    <label>Product category</label>
+                    <select id="product_category" name="product_category" required>
+                        <option value="">Select...</option>
+                        {% for value in training_options.get("product_category", []) %}
+                        <option value="{{ value }}"
+                            {% if submitted.get("product_category") == value %}selected{% endif %}>
+                            {{ value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Item price <span class="optional">(optional)</span></label>
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        id="item_price"
+                        name="item_price"
+                        value="{{ submitted.get('item_price', '') }}"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>
+                        Connected handling time
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        id="connected_handling_time"
+                        name="connected_handling_time"
+                        value="{{ submitted.get('connected_handling_time', '') }}"
+                    >
+                    <span class="hint">
+                        Continuous numeric value; use the same unit as the
+                        training dataset.
+                    </span>
+                </div>
+
+                <div class="field">
+                    <label>
+                        Customer city <span class="optional">(optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="customer_city"
+                        name="customer_city"
+                        value="{{ submitted.get('customer_city', '') }}"
+                    >
+                    <span class="hint">
+                        Current model uses city through its missing-value
+                        indicator rather than the city identity itself.
+                    </span>
+                </div>
+
+                <div class="field full">
+                    <label>
+                        Customer remarks <span class="optional">(optional)</span>
+                    </label>
+                    <textarea
+                        id="customer_remarks"
+                        name="customer_remarks"
+                        placeholder="Leave blank or enter a meaningful customer remark."
+                    >{{ submitted.get('customer_remarks', '') }}</textarea>
+                    <span class="hint">
+                        Punctuation-only entries such as "." are rejected.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <h2 class="section-title">2. Agent details</h2>
+            <p class="section-help">
+                Select Manager first. Remaining fields are restricted to
+                combinations that actually occurred in the source dataset.
+            </p>
+
+            <div class="grid">
+                <div class="field">
+                    <label>Manager</label>
+                    <select id="manager" name="manager" required>
+                        <option value="">Select...</option>
+                        {% for value in training_options.get("manager", []) %}
+                        <option value="{{ value }}"
+                            {% if submitted.get("manager") == value %}selected{% endif %}>
+                            {{ value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Supervisor</label>
+                    <select id="supervisor" name="supervisor" required>
+                        <option value="">Select Manager first...</option>
+                    </select>
+                    <span class="constraint-tag">Filtered by Manager</span>
+                </div>
+
+                <div class="field">
+                    <label>Agent name</label>
+                    <select id="agent_name" name="agent_name" required>
+                        <option value="">Select Supervisor first...</option>
+                    </select>
+                    <span class="constraint-tag">
+                        Filtered by Manager + Supervisor
+                    </span>
+                </div>
+
+                <div class="field">
+                    <label>Tenure bucket</label>
+                    <select id="tenure_bucket" name="tenure_bucket" required>
+                        <option value="">Select Agent first...</option>
+                    </select>
+                    <span class="constraint-tag">Valid for selected Agent</span>
+                </div>
+
+                <div class="field">
+                    <label>Agent shift</label>
+                    <select id="agent_shift" name="agent_shift" required>
+                        <option value="">Select Agent first...</option>
+                    </select>
+                    <span class="constraint-tag">Valid for selected Agent</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <h2 class="section-title">3. Timeline</h2>
+            <p class="section-help">
+                Response time, order-to-issue duration, survey delay, weekday
+                and time bucket are derived automatically.
+            </p>
+
+            <div class="grid">
+                <div class="field">
+                    <label>
+                        Order date & time <span class="optional">(optional)</span>
+                    </label>
+                    <input
+                        type="datetime-local"
+                        id="order_date_time"
+                        name="order_date_time"
+                        value="{{ submitted.get('order_date_time', '') }}"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Issue reported at</label>
+                    <input
+                        type="datetime-local"
+                        id="issue_reported_at"
+                        name="issue_reported_at"
+                        value="{{ submitted.get('issue_reported_at', '') }}"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label>
+                        Issue responded <span class="optional">(optional)</span>
+                    </label>
+                    <input
+                        type="datetime-local"
+                        id="issue_responded"
+                        name="issue_responded"
+                        value="{{ submitted.get('issue_responded', '') }}"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>
+                        Survey response date
+                        <span class="optional">(optional)</span>
+                    </label>
+                    <input
+                        type="datetime-local"
+                        id="survey_response_date"
+                        name="survey_response_date"
+                        value="{{ submitted.get('survey_response_date', '') }}"
+                    >
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="primary" type="submit">Predict CSAT</button>
+                <button class="secondary" type="button" id="sample-button">
+                    Load valid sample input
+                </button>
+                <button class="secondary" type="reset" id="clear-button">
+                    Clear
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    const constraints = {{ constraints | tojson }};
+    const submitted = {{ submitted | tojson }};
+    const SEP = constraints.separator || "|||";
+
+    function setOptions(id, values, placeholder, preferred="") {
+        const select = document.getElementById(id);
+        select.innerHTML = "";
+
+        const blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = placeholder;
+        select.appendChild(blank);
+
+        (values || []).forEach(value => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+        });
+
+        select.disabled = !(values && values.length);
+
+        if (preferred && (values || []).includes(preferred)) {
+            select.value = preferred;
+        }
+    }
+
+    function chooseFirst(id, preferred="") {
+        const select = document.getElementById(id);
+
+        if (preferred) {
+            const match = [...select.options].find(
+                x => x.value &&
+                     x.value.toLowerCase() === preferred.toLowerCase()
+            );
+            if (match) {
+                select.value = match.value;
+                return;
+            }
+        }
+
+        const first = [...select.options].find(x => x.value);
+        if (first) select.value = first.value;
+    }
+
+    function updateSubcategories(preferred="") {
+        const category = document.getElementById("category").value;
+        const values =
+            constraints.category_to_subcategories[category] || [];
+
+        setOptions(
+            "sub_category",
+            values,
+            category ? "Select Sub-category..." : "Select Category first...",
+            preferred
+        );
+    }
+
+    function updateSupervisors(preferred="") {
+        const manager = document.getElementById("manager").value;
+        const values =
+            constraints.manager_to_supervisors[manager] || [];
+
+        setOptions(
+            "supervisor",
+            values,
+            manager ? "Select Supervisor..." : "Select Manager first...",
+            preferred
+        );
+
+        updateAgents();
+    }
+
+    function updateAgents(preferred="") {
+        const manager = document.getElementById("manager").value;
+        const supervisor = document.getElementById("supervisor").value;
+
+        const key =
+            manager && supervisor
+                ? [manager, supervisor].join(SEP)
+                : "";
+
+        const values =
+            constraints.manager_supervisor_to_agents[key] || [];
+
+        setOptions(
+            "agent_name",
+            values,
+            supervisor ? "Select Agent..." : "Select Supervisor first...",
+            preferred
+        );
+
+        updateAgentProfile();
+    }
+
+    function updateAgentProfile(preferredTenure="", preferredShift="") {
+        const manager = document.getElementById("manager").value;
+        const supervisor = document.getElementById("supervisor").value;
+        const agent = document.getElementById("agent_name").value;
+
+        const key =
+            manager && supervisor && agent
+                ? [manager, supervisor, agent].join(SEP)
+                : "";
+
+        const tenure =
+            constraints.manager_supervisor_agent_to_tenure[key] || [];
+
+        const shifts =
+            constraints.manager_supervisor_agent_to_shift[key] || [];
+
+        setOptions(
+            "tenure_bucket",
+            tenure,
+            agent ? "Select Tenure..." : "Select Agent first...",
+            preferredTenure
+        );
+
+        setOptions(
+            "agent_shift",
+            shifts,
+            agent ? "Select Shift..." : "Select Agent first...",
+            preferredShift
+        );
+
+        if (!preferredTenure && tenure.length === 1) {
+            document.getElementById("tenure_bucket").value = tenure[0];
+        }
+
+        if (!preferredShift && shifts.length === 1) {
+            document.getElementById("agent_shift").value = shifts[0];
+        }
+    }
+
+    document.getElementById("category")
+        .addEventListener("change", () => updateSubcategories());
+
+    document.getElementById("manager")
+        .addEventListener("change", () => updateSupervisors());
+
+    document.getElementById("supervisor")
+        .addEventListener("change", () => updateAgents());
+
+    document.getElementById("agent_name")
+        .addEventListener("change", () => updateAgentProfile());
+
+    function restoreSubmitted() {
+        updateSubcategories(submitted.sub_category || "");
+        updateSupervisors(submitted.supervisor || "");
+
+        if (submitted.supervisor) {
+            document.getElementById("supervisor").value =
+                submitted.supervisor;
+            updateAgents(submitted.agent_name || "");
+        }
+
+        if (submitted.agent_name) {
+            document.getElementById("agent_name").value =
+                submitted.agent_name;
+            updateAgentProfile(
+                submitted.tenure_bucket || "",
+                submitted.agent_shift || ""
+            );
+        }
+    }
+
+    document.getElementById("sample-button")
+        .addEventListener("click", () => {
+
+            chooseFirst("channel_name", "Email");
+            chooseFirst("product_category");
+
+            chooseFirst("category");
+            updateSubcategories();
+            chooseFirst("sub_category");
+
+            chooseFirst("manager");
+            updateSupervisors();
+            chooseFirst("supervisor");
+
+            updateAgents();
+            chooseFirst("agent_name");
+
+            updateAgentProfile();
+            chooseFirst("tenure_bucket");
+            chooseFirst("agent_shift");
+
+            document.getElementById("item_price").value = "899";
+            document.getElementById("connected_handling_time").value = "10";
+            document.getElementById("customer_city").value = "Nagpur";
+
+            document.getElementById("customer_remarks").value =
+                "Customer contacted support regarding an order issue. " +
+                "The agent responded and resolved the query.";
+
+            document.getElementById("order_date_time").value =
+                "2026-09-01T09:00";
+            document.getElementById("issue_reported_at").value =
+                "2026-09-02T10:00";
+            document.getElementById("issue_responded").value =
+                "2026-09-02T10:20";
+            document.getElementById("survey_response_date").value =
+                "2026-09-02T12:00";
+        });
+
+    document.getElementById("clear-button")
+        .addEventListener("click", () => {
+            setTimeout(() => {
+                updateSubcategories();
+                updateSupervisors();
+            }, 0);
+        });
+
+    restoreSubmitted();
+</script>
+
+</body>
+</html>

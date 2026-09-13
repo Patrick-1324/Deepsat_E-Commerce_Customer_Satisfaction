@@ -1,0 +1,19 @@
+@"
+deepsat/
+deepcsat__score_prediction.7z
+
+__pycache__/
+*.py[cod]
+
+.ipynb_checkpoints/
+
+.env
+.env.*
+
+.vscode/
+
+.DS_Store
+Thumbs.db
+
+*.log
+"@ | Set-Content .gitignore

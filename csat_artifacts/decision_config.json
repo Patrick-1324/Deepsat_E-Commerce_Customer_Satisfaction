@@ -1,0 +1,10 @@
+{
+  "prediction_rule": "argmax",
+  "probability_divisor": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ]
+}

@@ -1,0 +1,188 @@
+Overview
+This project focuses on predicting Customer Satisfaction (CSAT) scores using Deep Learning Artificial Neural Networks (ANN). In the context of e-commerce, understanding customer satisfaction through their interactions and feedback is crucial for enhancing service quality, customer retention, and overall business growth. By leveraging advanced neural network models, we aim to accurately forecast CSAT scores based on a myriad of interaction-related features, providing actionable insights for service improvement.
+
+Project Background
+Customer satisfaction in the e-commerce sector is a pivotal metric that influences loyalty, repeat business, and word-of-mouth marketing. Traditionally, companies have relied on direct surveys to gauge customer satisfaction, which can be time-consuming and may not always capture the full spectrum of customer experiences. With the advent of deep learning, it's now possible to predict customer satisfaction scores in real-time, offering a granular view of service performance and identifying areas for immediate improvement.
+
+Dataset Overview
+The dataset encompasses customer satisfaction scores over a one-month period on an e-commerce platform named "Shopzilla." It consists of the following features:
+
+Unique id: Unique identifier for each record (integer).
+Channel name: Name of the customer service channel (object/string).
+Category: Category of the interaction (object/string).
+Sub-category: Sub-category of the interaction (object/string).
+Customer Remarks: Feedback provided by the customer (object/string).
+Order id: Identifier for the order associated with the interaction (integer).
+Order date time: Date and time of the order (datetime).
+Issue reported at: Timestamp when the issue was reported (datetime).
+Issue responded: Timestamp when the issue was responded to (datetime).
+Survey response date: Date of the customer survey response (datetime).
+Customer city: City of the customer (object/string).
+Product category: Category of the product (object/string).
+Item price: Price of the item (float).
+Connected handling time: Time taken to handle the interaction (float).
+Agent name: Name of the customer service agent (object/string).
+Supervisor: Name of the supervisor (object/string).
+Manager: Name of the manager (object/string).
+Tenure Bucket: Bucket categorizing agent tenure (object/string).
+Agent Shift: Shift timing of the agent (object/string).
+CSAT Score: Customer Satisfaction (CSAT) score (integer).
+Project Goal
+The primary goal of this project is to develop a deep learning model that can accurately predict the CSAT scores based on customer interactions and feedback. By doing so, we aim to provide e-commerce businesses with a powerful tool to monitor and enhance customer satisfaction in real-time, thereby improving service quality and fostering customer loyalty.
+
+Specific Objectives
+Data Preparation: Clean and preprocess the dataset to ensure it is suitable for training a deep learning model.
+Feature Engineering: Identify and engineer features from the dataset that are most predictive of CSAT scores.
+Model Development: Design and train a deep learning ANN model to predict CSAT scores.
+Evaluation: Assess the model's performance using appropriate metrics and validate its predictive accuracy.
+Insight Generation: Analyze the model's predictions to identify trends, patterns, and areas for service improvement.
+Local Deployment: Deploy the model in your local system and setting to provide ongoing predictions and insights into customer satisfaction. This section is to be covered during your Video Presentation.
+
+1. Data Integrity and Cleaning (10%)
+Ensures complete data integrity with thorough identification and handling of missing, duplicate, or irrelevant data points.
+Demonstrates meticulous cleaning processes tailored to the dataset's characteristics, enhancing data quality for analysis.
+2. Feature Engineering and Selection (20%)
+Exhibits creativity and analytical skills in crafting features that significantly influence CSAT predictions.
+Demonstrates a methodical approach to feature selection, prioritizing variables that improve model performance.
+3. Data Preprocessing and Transformation (15%)
+Applies appropriate preprocessing techniques, such as normalization, encoding, and timestamp parsing, to prepare the dataset for neural network modeling.
+Showcases proficiency in transforming data into a format conducive to deep learning, enhancing model input quality.
+4. Model Development and Architecture (20%)
+Designs an ANN model with a well-justified architecture, considering layer types, activation functions, and connectivity patterns.
+Employs best practices in deep learning to construct a robust model capable of capturing complex nonlinear relationships in the data.
+5. Training Efficiency and Optimization (10%)
+Implements effective training strategies, including batch processing, learning rate optimization, and early stopping to enhance model convergence.
+Demonstrates efficient use of computational resources, optimizing model training time without compromising accuracy.
+6. Evaluation Metrics and Model Validation (15%)
+Utilizes relevant evaluation metrics to assess model performance accurately, with a focus on metrics pertinent to CSAT score prediction.
+Conducts comprehensive validation, including cross-validation or split-sample validation, to ensure model generalizability.
+7. Innovative Techniques in Deep Learning & Local Deployment (5%)
+Introduces novel deep learning approaches or customizations to the ANN model, showcasing innovative thinking in tackling CSAT prediction.
+Experimentation with advanced features or cutting-edge neural network techniques to improve prediction accuracy.
+8. Documentation, Interpretability, and Presentation (5%)
+Github Commits, Structure & Format
+Provides clear, concise documentation of the data evaluation process, model architecture, and analysis results.
+Ensures model interpretability, offering insights into how features influence CSAT scores, facilitating actionable business decisions.
+Professionalism and clarity in the presentation of findings, with a focus on how the project can drive improvements in customer satisfaction.
+Data File
+Link to Dataset
+Project Template & Demo Project
+Link to Project Template(for the modeling part)
+Video Presentation Guidelines
+1. Introduction (1.5 min)
+Explain:
+
+What type of deep learning model you built
+Problem domain:
+e-commerce customer satisfaction
+What the model predicts:
+CSAT score
+Tech stack:
+Python
+deep learning libraries
+ANN model
+local deployment setup
+What interviewer checks:
+
+Clarity of prediction objective
+Understanding of ANN-based use case
+2. Problem Understanding (2 min)
+Explain:
+
+Why predicting CSAT is useful for e-commerce
+How customer satisfaction affects business outcomes
+Why manual surveys alone are not enough
+How a predictive model supports service quality improvement
+Focus:
+
+Business significance of CSAT prediction
+Real-time decision-making value
+3. Data Understanding & Preparation (2 min)
+Explain:
+
+Key dataset fields:
+channel
+category
+customer remarks
+handling time
+city
+product category
+item price
+agent information
+Data cleaning and preprocessing steps
+Handling text, time, and categorical features
+Feature engineering logic
+What interviewer checks:
+
+Readiness of data for neural networks
+Understanding of predictive features
+4. ANN Architecture & Training Process (2.5 min)
+Explain:
+
+Why ANN was selected
+Model input and output structure
+Hidden layers, activations, and training logic at a high level
+Training-validation split and tuning process
+Avoid:
+
+Explaining neural network math without connecting it to the project goal
+5. Model Evaluation & Prediction Quality (2 min)
+Explain:
+
+Metrics used to evaluate performance
+How well the model predicts CSAT
+Common error patterns
+What the predictions reveal about customer satisfaction trends
+Focus:
+
+Practical interpretation of model output
+Reliability of predictions
+6. Business Insights & Local Deployment (2 min)
+Explain:
+
+How predictions can be used by customer support teams
+Service improvement opportunities revealed by the model
+How local deployment was done
+How the deployed model can support ongoing analysis
+What interviewer checks:
+
+Ability to convert model outputs into action
+Practical deployment awareness
+7. Challenges, Optimization & Improvements (1.5 min)
+Explain:
+
+Challenges faced:
+feature complexity
+categorical encoding
+overfitting
+deployment setup
+Optimizations made:
+better preprocessing
+better network design
+tuning
+Future improvements:
+text embeddings
+advanced architectures
+real-time dashboards
+8. Learnings & Practical Value (1.5 min)
+Explain:
+
+What you learned from applying deep learning to a business problem
+Most important customer-service insight found
+Value of predicting satisfaction proactively
+How the project can be extended further
+Follow-up Interview Questions
+Why did you choose ANN for this problem?
+Which features were most useful in predicting CSAT?
+How would you reduce overfitting in this model?
+How would you improve the system for real-time prediction?
+How would businesses use these predictions operationally?
+
+Files that must be submitted
+Team / Individual Collab Notebook with the pre-defined Project template format. Include well-explained and reasoning paragraphs (with the Project Summary & GitHub Repo link inside)
+Team /Individual Collab Notebook Explanation Video (Restricted to 25 mins.)
+Ensure the explanation video lasts no less than 15 minutes.
+File Sharing and Uploading Options
+Put all the doc files, colab files, additional scripts and datasets in Google Drive and submit the drive link under Project link, while the presentation link under Video link in submission dashboard.
+The work and the submission should be completely individual.
+Make the google collab file accessible (view) to everyone.

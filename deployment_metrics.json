@@ -1,0 +1,10 @@
+{
+  "test_accuracy": 0.7212,
+  "majority_baseline_accuracy": 0.694,
+  "macro_f1": 0.2547,
+  "quadratic_kappa": 0.3546,
+  "csat_mae": 0.6537,
+  "within_plus_minus_1": 0.8495,
+  "overall_mean_csat": 4.242,
+  "selected_model": "Accuracy ANN"
+}
